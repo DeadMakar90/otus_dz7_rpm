@@ -8,9 +8,8 @@ sudo wget https://repo.zabbix.com/non-supported/rhel/7/x86_64/iksemel-devel-1.4-
 sudo wget https://repo.zabbix.com/non-supported/rhel/7/x86_64/iksemel-utils-1.4-2.el7.centos.x86_64.rpm
 sudo rpm -i *64.rpm
 sudo rpm -i zabbix-3.0.31-1.el7.src.rpm
-sudo yum-builddep /root/rpmbuild/SPECS/zabbix.spec
-rpmbuild -bb /root/rpmbuild/SPECS/zabbix.spec
-sudo yum localinstall -y /root/rpmbuild/RPMS/x86_64/
+sudo yum-builddep -y /root/rpmbuild/SPECS/zabbix.spec
+sudo rpmbuild -bb /root/rpmbuild/SPECS/zabbix.spec
 sudo yum install localinstall -y /root/rpmbuild/RPMS/x86_64/zabbix-agent-3.0.31-1.el7.x86_64.rpm
 
 #Создание репозитория
