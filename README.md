@@ -202,7 +202,9 @@ docker run -d -p 8080:80 kunakow/otus:otus
 
 
 
-[Vagrantfile]:https://github.com/kunakow/otus_dz7_rpm/blob/main/Vagrantfile
-[Скрипт]:https://github.com/kunakow/otus_dz7_rpm/blob/main/rpmbuild_script.sh
-[Мануал по Docker'у]:https://www.dmosk.ru/miniinstruktions.php?mini=docker-self-image
+Vagrantfile : https://github.com/kunakow/otus_dz7_rpm/blob/main/Vagrantfile
+
+Скрипт : https://github.com/kunakow/otus_dz7_rpm/blob/main/rpmbuild_script.sh
+
+Мануал по Docker'у : https://www.dmosk.ru/miniinstruktions.php?mini=docker-self-image
 
