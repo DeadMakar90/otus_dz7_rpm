@@ -172,11 +172,11 @@ docker run -d -p 8080:80 vkunakbaev/nginx:v1
 
 1. Зарегистрироваться на Docker Hub по ссылке: https://hub.docker.com/signup?next=%2F%3Fref%3Dlogin
 
-2. Перейти на страницу Repositories и создать свой репозиторий, в нашем случае, vkunakbaev. Теперь можно загрузить образ в репозиторий.
+2. Перейти на страницу Repositories и создать свой репозиторий, в нашем случае, kunakow. Теперь можно загрузить образ в репозиторий.
 
 3. Авторизоваться на машине с образом под зарегистрированным пользователем:
 ```
-docker login --username vkunakbaev
+docker login --username kunakow
 ```
 4. Задать тег для одного из образов и загрузить его в репозиторий:
 ```
@@ -184,7 +184,7 @@ docker tag vkunakbaev/nginx:v1 kunakow/otus:otus
 
 docker push kunakow/otus:otus
 ```
-В Docker Hub должны появиться наш образы.
+В Docker Hub должен появиться образ.
 
 Чтобы воспользоваться образом на другом компьютере, необходимо авторизоваться под зарегистрированным пользователем:
 ```
@@ -198,3 +198,11 @@ docker pull kunakow/otus:otus
 ```
 docker run -d -p 8080:80 kunakow/otus:otus
 ```
+
+
+
+
+[Vagrantfile]:https://github.com/kunakow/otus_dz7_rpm/blob/main/Vagrantfile
+[Скрипт]:https://github.com/kunakow/otus_dz7_rpm/blob/main/rpmbuild_script.sh
+[Мануал по Docker'у]:https://www.dmosk.ru/miniinstruktions.php?mini=docker-self-image
+
