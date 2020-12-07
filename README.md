@@ -51,7 +51,7 @@ sudo yum install localinstall -y /root/rpmbuild/RPMS/x86_64/zabbix-agent-3.0.31-
 ```
 sudo systemctl start zabbix-agent.service
 ```
-Посмотреть с какими параметрами был скомпилирован zabbix
+Посмотреть с какими параметрами был скомпилирован zabbix:
 ```
 [vagrant@localhost ~]$ zabbix_agentd -V
 zabbix_agentd (daemon) (Zabbix) 3.0.31
@@ -71,7 +71,7 @@ Running with OpenSSL 1.0.2k-fips  26 Jan 2017
 
 #### 2. Создать свой репозиторий
 
-Выполнить установку пакетов
+Выполнить установку пакетов:
 ```
 sudo yum install -y epel-release
 sudo yum install -y nginx
@@ -113,4 +113,88 @@ zabbix-proxy-sqlite3.x86_64               3.0.31-1.el7                 zabbixotu
 zabbix-sender.x86_64                      3.0.31-1.el7                 zabbixotus
 zabbix-server-mysql.x86_64                3.0.31-1.el7                 zabbixotus
 zabbix-server-pgsql.x86_64                3.0.31-1.el7                 zabbixotus
+```
+
+#### 3. Реализовать пакет через docker:
+
+Установить репозиторий, для этого загрузить файл с настройками репозитория:
+```
+sudo wget https://download.docker.com/linux/centos/docker-ce.repo
+sudo mv docker-ce.repo /etc/yum.repos.d/
+```
+Установить docker:
+```
+sudo yum install docker-ce docker-ce-cli containerd.io
+```
+Запустить сервис:
+```
+systemctl enable docker
+systemctl start docker
+```
+Чтобы создать образ, необходимо создать каталог для размещения Dockerfile и создать его:
+```
+sudo mkdir -p /opt/docker/mynginx
+sudo vi Dockerfile
+```
+Мы будем собирать nginx, для этого, Dockerfile должен иметь вид:
+```
+FROM centos:7
+MAINTAINER KunakbaevVV vkunakbaev@1111.ru
+RUN yum install -y redhat-lsb-core wget rpmdevtools rpm-build yum-utils openssl-devel zlib-devel pcre-devel gcc libtool perl-core openssl
+RUN wget https://nginx.org/packages/centos/7/SRPMS/nginx-1.14.1-1.el7_4.ngx.src.rpm
+RUN rpm -i nginx-1.14.1-1.el7_4.ngx.src.rpm
+RUN yum-builddep -y /root/rpmbuild/SPECS/nginx.spec
+RUN rpmbuild -bb /root/rpmbuild/SPECS/nginx.spec
+RUN yum localinstall -y /root/rpmbuild/RPMS/x86_64/*.rpm
+RUN yum clean all
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN sed -i "0,/nginx/s/nginx/docker-nginx/i" /usr/share/nginx/html/index.html
+CMD [ "nginx" ]
+```
+Запустить сборку:
+```
+sudo docker build -t vkunakbaev/nginx:v1 .
+.........
+Successfully built eae801eaeff2
+Successfully tagged vkunakbaev/nginx:v1
+```
+
+Посмотреть список образов можно командой:
+```
+docker images
+```
+
+Создать и запустить контейнер из образа:
+```
+docker run -d -p 8080:80 vkunakbaev/nginx:v1
+```
+Загрузка образа на Docker Hub:
+
+1. Зарегистрироваться на Docker Hub по ссылке: https://hub.docker.com/signup?next=%2F%3Fref%3Dlogin
+
+2. Перейти на страницу Repositories и создать свой репозиторий, в нашем случае, vkunakbaev. Теперь можно загрузить образ в репозиторий.
+
+3. Авторизоваться на машине с образом под зарегистрированным пользователем:
+```
+docker login --username vkunakbaev
+```
+4. Задать тег для одного из образов и загрузить его в репозиторий:
+```
+docker tag vkunakbaev/nginx:v1 kunakow/otus:otus
+
+docker push kunakow/otus:otus
+```
+В Docker Hub должны появиться наш образы.
+
+Чтобы воспользоваться образом на другом компьютере, необходимо авторизоваться под зарегистрированным пользователем:
+```
+sudo docker login --username kunakow
+```
+Загрузить образ:
+```
+docker pull kunakow/otus:otus
+```
+Запустить:
+```
+docker run -d -p 8080:80 kunakow/otus:otus
 ```
